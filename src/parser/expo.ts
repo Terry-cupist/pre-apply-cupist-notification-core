@@ -51,7 +51,7 @@ export const parseExpoForegroundMessage = (message: ExpoNotification) => {
   return { deepLink, content, internalImage, type, raw: message };
 };
 
-interface ExpoNotificationResponse {
+export interface ExpoNotificationResponse {
   notification: {
     request: {
       trigger: NotificationTrigger;
