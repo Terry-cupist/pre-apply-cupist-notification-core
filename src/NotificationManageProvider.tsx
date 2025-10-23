@@ -19,11 +19,12 @@ type NotificationManageProviderProps = PropsWithChildren<{
   checkPermission: () => Promise<void>;
   checkRegisteredDevice: () => Promise<void>;
   getToken: () => Promise<string>;
-  registerTokenApi: (token: string) => Promise<void>;
+  registerTokenApi?: (token: string) => Promise<void>;
   refreshTokenListener: (callback: (newToken: string) => void) => () => void;
-  onError: (error: unknown) => void;
   getStoredToken: () => Promise<string>;
   setStoredToken: (token: string) => Promise<void> | void;
+  onInitializeTokenError?: (error: unknown) => void;
+  onTokenChangeError?: (error: unknown) => void;
 }>;
 
 export const NotificationManageProvider = ({
@@ -33,9 +34,10 @@ export const NotificationManageProvider = ({
   getToken,
   registerTokenApi,
   refreshTokenListener,
-  onError,
   getStoredToken,
   setStoredToken,
+  onInitializeTokenError,
+  onTokenChangeError,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
 
@@ -47,10 +49,10 @@ export const NotificationManageProvider = ({
 
         const responseToken = await getToken();
         setToken(responseToken);
-        await registerTokenApi(responseToken);
+        await registerTokenApi?.(responseToken);
         setStoredToken(responseToken);
       } catch (error) {
-        onError(error);
+        onInitializeTokenError?.(error);
       }
     })();
   }, []);
@@ -58,10 +60,14 @@ export const NotificationManageProvider = ({
   useEffect(() => {
     (async () => {
       if (token) {
-        const prevToken = await getStoredToken();
-        if (prevToken !== token) {
-          await registerTokenApi(token);
-          setStoredToken(token);
+        try {
+          const prevToken = await getStoredToken();
+          if (prevToken !== token) {
+            await registerTokenApi?.(token);
+            setStoredToken(token);
+          }
+        } catch (error) {
+          onTokenChangeError?.(error);
         }
       }
     })();
