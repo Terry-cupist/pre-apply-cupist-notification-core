@@ -64,10 +64,11 @@ export const parseExpoNotificationResponse = (
 ) => {
   let deepLink = "";
   const trigger = response.notification.request.trigger;
+  const type = trigger?.payload?.type;
   const displayJson = trigger?.payload?.display;
   if (trigger.type === "push" && displayJson) {
     const data = JSON.parse(displayJson);
     deepLink = data.action;
   }
-  return { deepLink, raw: response };
+  return { deepLink, type, raw: response };
 };
