@@ -18,8 +18,8 @@ export const NotificationManageContext =
 type NotificationManageProviderProps = PropsWithChildren<{
   checkPermission: () => Promise<void>;
   checkRegisteredDevice: () => Promise<void>;
-  getToken: () => Promise<string>;
-  registerTokenApi?: (token: string) => Promise<void>;
+  getToken: () => Promise<string> | string;
+  registerTokenApi?: (token: string) => Promise<any>;
   refreshTokenListener: (callback: (newToken: string) => void) => () => void;
   getStoredToken: () => Promise<string>;
   setStoredToken: (token: string) => Promise<void> | void;
