@@ -17,6 +17,9 @@
   ],
   "author": "cupist-terry",
   "license": "ISC",
+  "publishConfig": {
+    "registry": "http://localhost:4873/"
+  },
   "peerDependencies": {
     "react": "18.2.0",
     "react-native": "0.73.2"
