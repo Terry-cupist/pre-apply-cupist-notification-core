@@ -1,4 +1,4 @@
-interface ReactNativeNotification {
+export interface ReactNativeNotification {
   data: {
     type?: string;
     action?: string;

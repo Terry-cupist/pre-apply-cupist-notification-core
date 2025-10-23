@@ -1,4 +1,4 @@
-interface ExpoNotification {
+export interface ExpoNotification {
   request: {
     content: {
       body?: string;
@@ -9,12 +9,12 @@ interface ExpoNotification {
   };
 }
 
-interface NotificationTrigger {
+export interface NotificationTrigger {
   type: "push" | "timeInterval" | "calendar" | "location" | "unknown";
   payload?: NotificationPayload;
 }
 
-interface NotificationPayload {
+export interface NotificationPayload {
   ab_uri?: string;
   display?: string;
   type?: string;

@@ -17,7 +17,7 @@ export interface RemoteMessage {
   sentTime?: number;
 }
 
-interface DisplayJSON {
+export interface DisplayJSON {
   title?: string;
   body?: string;
   icon_path?: string;
