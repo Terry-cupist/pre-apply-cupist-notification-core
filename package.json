@@ -1,0 +1,39 @@
+{
+  "name": "@cupist/notification-core",
+  "version": "1.0.0",
+  "description": "Cupist notification core module.",
+  "main": "dist",
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "build": "yarn build:tsc && yarn build:alias",
+    "build:tsc": "yarn tsc --outDir dist",
+    "build:alias": "tsc-alias -p tsconfig.json",
+    "prepublishOnly": "yarn prebuild && yarn build",
+    "submit": "npm publish --registry=http://localhost:4873"
+  },
+  "keywords": [
+    "notification",
+    "cupist"
+  ],
+  "author": "cupist-terry",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-native": "0.73.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@tsconfig/react-native": "^3.0.3",
+    "@types/react": "^18.2.60",
+    "@types/react-native": "^0.73.0",
+    "@types/react-native-push-notification": "^8.1.4",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.3.0"
+  }
+}
