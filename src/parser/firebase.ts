@@ -25,6 +25,7 @@ interface DisplayJSON {
   internal_body?: string;
   internal_icon_path?: string;
   action?: string;
+  type?: string;
 }
 
 export const parseFCMForegroundMessage = (message: RemoteMessage) => {
@@ -66,12 +67,13 @@ export const parseFCMBackgroundMessage = (message: RemoteMessage) => {
   const displayMessage = displayJson?.body;
   const largeIconUrl = displayJson?.icon_path;
   const bigPictureUrl = displayJson?.icon_path;
+  const displayType = displayJson?.type;
   return {
     title,
     message: displayMessage,
     largeIconUrl,
     bigPictureUrl,
-    type,
+    type: displayType,
     raw: message,
   };
 };
