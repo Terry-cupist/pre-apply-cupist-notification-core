@@ -51,10 +51,18 @@ export const parseExpoForegroundMessage = (message: ExpoNotification) => {
   return { deepLink, content, internalImage, type, raw: message };
 };
 
+export interface NotificationContent {
+  data: {
+    type?: string;
+    action?: string;
+  };
+}
+
 export interface ExpoNotificationResponse {
   notification: {
     request: {
       trigger: NotificationTrigger;
+      content: NotificationContent;
     };
   };
 }
@@ -63,12 +71,22 @@ export const parseExpoNotificationResponse = (
   response: ExpoNotificationResponse,
 ) => {
   let deepLink = "";
+  let type = "";
+
   const trigger = response.notification.request.trigger;
-  const type = trigger?.payload?.type;
-  const displayJson = trigger?.payload?.display;
-  if (trigger.type === "push" && displayJson) {
-    const data = JSON.parse(displayJson);
-    deepLink = data.action;
+  const contentData = response.notification.request.content.data;
+  if (trigger.type === "push") {
+    type = trigger?.payload?.type ?? "";
+
+    const displayJson = trigger?.payload?.display;
+    if (displayJson) {
+      const data = JSON.parse(displayJson);
+      deepLink = data.action;
+    }
+  } else if (contentData) {
+    type = contentData.type ?? "";
+    deepLink = contentData.action ?? "";
   }
+
   return { deepLink, type, raw: response };
 };
