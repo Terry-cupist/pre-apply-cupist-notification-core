@@ -2,7 +2,13 @@
   "name": "@cupist/notification-core",
   "version": "1.0.19",
   "description": "Cupist notification core module.",
-  "main": "dist",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "yarn build:tsc && yarn build:alias",
