@@ -45,6 +45,12 @@ type NotificationManageProviderProps = PropsWithChildren<{
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
+  openToast: (params: {
+    content: string;
+    deepLink?: string;
+    image?: string;
+    type?: string;
+  }) => void;
 }>;
 
 export const NotificationManageProvider = ({
