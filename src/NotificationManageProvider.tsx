@@ -20,6 +20,10 @@ export type NotificationManageContextValue = {
     image?: string;
     type?: string;
   }) => void;
+  localPushNotification: (
+    notificationInfo: { title: string; message: string; largeIconUrl: string },
+    userInfo: unknown,
+  ) => void;
 };
 export const NotificationManageContext =
   createContext<NotificationManageContextValue>({
@@ -30,6 +34,7 @@ export const NotificationManageContext =
     openLink: () => {},
     refreshBadgeCount: () => {},
     openToast: () => {},
+    localPushNotification: () => {},
   });
 
 type NotificationManageProviderProps = PropsWithChildren<{
@@ -58,6 +63,10 @@ type NotificationManageProviderProps = PropsWithChildren<{
     image?: string;
     type?: string;
   }) => void;
+  localPushNotification: (
+    notificationInfo: { title: string; message: string; largeIconUrl: string },
+    userInfo: unknown,
+  ) => void;
 }>;
 
 export const NotificationManageProvider = ({
@@ -82,6 +91,7 @@ export const NotificationManageProvider = ({
   openLink,
   refreshBadgeCount,
   openToast,
+  localPushNotification,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
 
@@ -135,6 +145,7 @@ export const NotificationManageProvider = ({
       openLink,
       refreshBadgeCount,
       openToast,
+      localPushNotification,
     }),
     [
       token,
@@ -144,6 +155,7 @@ export const NotificationManageProvider = ({
       openLink,
       refreshBadgeCount,
       openToast,
+      localPushNotification,
     ],
   );
   return (
