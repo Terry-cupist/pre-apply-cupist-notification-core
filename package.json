@@ -1,6 +1,6 @@
 {
   "name": "@cupist/notification-core",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Cupist notification core module.",
   "main": "dist",
   "scripts": {
