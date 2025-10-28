@@ -9,13 +9,27 @@ import {
 
 type NotificationManageContextValue = {
   token: string;
+  sendNotificationUserEvent: (type: string) => void;
+  refreshDeepLinkApis: (deepLink: string) => void;
+  navigateToLink: (deepLink: string) => void;
+  openLink: (deepLink: string) => void;
+  refreshBadgeCount: () => void;
 };
 export const NotificationManageContext =
   createContext<NotificationManageContextValue>({
     token: "",
+    sendNotificationUserEvent: () => {},
+    refreshDeepLinkApis: () => {},
+    navigateToLink: () => {},
+    openLink: () => {},
+    refreshBadgeCount: () => {},
   });
 
 type NotificationManageProviderProps = PropsWithChildren<{
+  // Environment management
+  setForegroundNotificationHandler: () => void;
+  createChannel: () => void;
+  // Token management
   checkPermission: () => Promise<void>;
   checkRegisteredDevice: () => Promise<void>;
   getToken: () => Promise<string> | string;
@@ -25,10 +39,20 @@ type NotificationManageProviderProps = PropsWithChildren<{
   setStoredToken: (token: string) => Promise<void> | void;
   onInitializeTokenError?: (error: unknown) => void;
   onTokenChangeError?: (error: unknown) => void;
+  // Notification handler events
+  sendNotificationUserEvent: (type: string) => void;
+  refreshDeepLinkApis: (deepLink: string) => void;
+  navigateToLink: (deepLink: string) => void;
+  openLink: (deepLink: string) => void;
+  refreshBadgeCount: () => void;
 }>;
 
 export const NotificationManageProvider = ({
   children,
+  // Environment management
+  setForegroundNotificationHandler,
+  createChannel,
+  // Token management
   checkPermission,
   checkRegisteredDevice,
   getToken,
@@ -38,8 +62,19 @@ export const NotificationManageProvider = ({
   setStoredToken,
   onInitializeTokenError,
   onTokenChangeError,
+  // Notification handler events
+  sendNotificationUserEvent,
+  refreshDeepLinkApis,
+  navigateToLink,
+  openLink,
+  refreshBadgeCount,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
+
+  useEffect(() => {
+    setForegroundNotificationHandler();
+    createChannel();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -78,8 +113,22 @@ export const NotificationManageProvider = ({
   }, []);
 
   const contextValue: NotificationManageContextValue = useMemo(
-    () => ({ token }),
-    [token],
+    () => ({
+      token,
+      sendNotificationUserEvent,
+      refreshDeepLinkApis,
+      navigateToLink,
+      openLink,
+      refreshBadgeCount,
+    }),
+    [
+      token,
+      sendNotificationUserEvent,
+      refreshDeepLinkApis,
+      navigateToLink,
+      openLink,
+      refreshBadgeCount,
+    ],
   );
   return (
     <NotificationManageContext.Provider value={contextValue}>
