@@ -26,7 +26,7 @@ export const parseExpoForegroundMessage = (message: ExpoNotification) => {
   const displayJson = trigger?.payload?.display;
 
   let deepLink = "";
-  let content = message.request.content.body;
+  let content = message.request.content.body ?? "";
   let internalImage = "";
   let type = "";
 
