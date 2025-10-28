@@ -23,10 +23,11 @@ export type NotificationManageContextValue = {
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
-  getValidNotificationUIData?: (
-    params: NotificationUIData,
-  ) => NotificationUIData | null;
-  openNotificationUI: (params: NotificationUIData) => void;
+  checkIsToastOpenValid?: (params: NotificationUIData) => boolean;
+  beforeOpenNotificationUI?: (params: NotificationUIData) => void;
+  openToast: (params: NotificationUIData) => void;
+  onToastPress?: (params: NotificationUIData) => void;
+  afterOpenToast?: (params: NotificationUIData) => void;
   localPushNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
@@ -41,8 +42,11 @@ export const NotificationManageContext =
     navigateToLink: () => {},
     openLink: () => {},
     refreshBadgeCount: () => {},
-    getValidNotificationUIData: () => null,
-    openNotificationUI: () => {},
+    checkIsToastOpenValid: () => true,
+    beforeOpenNotificationUI: () => {},
+    openToast: () => {},
+    onToastPress: () => {},
+    afterOpenToast: () => {},
     localPushNotification: () => {},
     activeNotificationNavigation: () => {},
   });
@@ -67,10 +71,11 @@ type NotificationManageProviderProps = PropsWithChildren<{
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
-  getValidNotificationUIData?: (
-    params: NotificationUIData,
-  ) => NotificationUIData | null;
-  openNotificationUI: (params: NotificationUIData) => void;
+  checkIsToastOpenValid?: (params: NotificationUIData) => boolean;
+  beforeOpenNotificationUI?: (params: NotificationUIData) => void;
+  openToast: (params: NotificationUIData) => void;
+  onToastPress?: (params: NotificationUIData) => void;
+  afterOpenToast?: (params: NotificationUIData) => void;
   localPushNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
@@ -98,8 +103,11 @@ export const NotificationManageProvider = ({
   navigateToLink: _navigateToLink,
   openLink,
   refreshBadgeCount,
-  getValidNotificationUIData,
-  openNotificationUI,
+  checkIsToastOpenValid,
+  beforeOpenNotificationUI,
+  openToast,
+  onToastPress,
+  afterOpenToast,
   localPushNotification,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
@@ -178,8 +186,11 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
-      getValidNotificationUIData,
-      openNotificationUI,
+      checkIsToastOpenValid,
+      beforeOpenNotificationUI,
+      openToast,
+      onToastPress,
+      afterOpenToast,
       localPushNotification,
       activeNotificationNavigation,
     }),
@@ -190,8 +201,11 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
-      getValidNotificationUIData,
-      openNotificationUI,
+      checkIsToastOpenValid,
+      beforeOpenNotificationUI,
+      openToast,
+      onToastPress,
+      afterOpenToast,
       localPushNotification,
       activeNotificationNavigation,
     ],
