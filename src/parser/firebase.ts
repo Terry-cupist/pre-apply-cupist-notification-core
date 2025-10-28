@@ -74,6 +74,7 @@ export const parseFCMBackgroundMessage = (message: RemoteMessage) => {
     largeIconUrl,
     bigPictureUrl,
     type: displayType,
+    display: displayJson,
     raw: message,
   };
 };
