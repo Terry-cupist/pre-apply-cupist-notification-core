@@ -25,7 +25,7 @@ export type NotificationManageContextValue = {
   refreshBadgeCount: () => void;
   checkIsToastOpenValid?: (params: NotificationUIData) => boolean;
   beforeOpenNotificationUI?: (params: NotificationUIData) => void;
-  openToast: (params: NotificationUIData) => void;
+  openToast: (params: NotificationUIData & { onPress: () => void }) => void;
   onToastPress?: (params: NotificationUIData) => void;
   afterOpenToast?: (params: NotificationUIData) => void;
   localPushNotification: (
@@ -73,7 +73,7 @@ type NotificationManageProviderProps = PropsWithChildren<{
   refreshBadgeCount: () => void;
   checkIsToastOpenValid?: (params: NotificationUIData) => boolean;
   beforeOpenNotificationUI?: (params: NotificationUIData) => void;
-  openToast: (params: NotificationUIData) => void;
+  openToast: (params: NotificationUIData & { onPress: () => void }) => void;
   onToastPress?: (params: NotificationUIData) => void;
   afterOpenToast?: (params: NotificationUIData) => void;
   localPushNotification: (
