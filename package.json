@@ -1,6 +1,6 @@
 {
   "name": "@cupist/notification-core",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "Cupist notification core module.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
