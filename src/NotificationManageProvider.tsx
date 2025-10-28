@@ -9,6 +9,13 @@ import {
   useState,
 } from "react";
 
+export type NotificationUIData = {
+  content: string;
+  deepLink?: string;
+  image?: string;
+  type?: string;
+};
+
 export type NotificationManageContextValue = {
   token: string;
   sendNotificationUserEvent: (type: string) => void;
@@ -16,12 +23,10 @@ export type NotificationManageContextValue = {
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
-  openNotificationUI: (params: {
-    content: string;
-    deepLink?: string;
-    image?: string;
-    type?: string;
-  }) => void;
+  getValidNotificationUIData?: (
+    params: NotificationUIData,
+  ) => NotificationUIData | null;
+  openNotificationUI: (params: NotificationUIData) => void;
   localPushNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
@@ -36,6 +41,7 @@ export const NotificationManageContext =
     navigateToLink: () => {},
     openLink: () => {},
     refreshBadgeCount: () => {},
+    getValidNotificationUIData: () => null,
     openNotificationUI: () => {},
     localPushNotification: () => {},
     activeNotificationNavigation: () => {},
@@ -61,12 +67,10 @@ type NotificationManageProviderProps = PropsWithChildren<{
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
-  openNotificationUI: (params: {
-    content: string;
-    deepLink?: string;
-    image?: string;
-    type?: string;
-  }) => void;
+  getValidNotificationUIData?: (
+    params: NotificationUIData,
+  ) => NotificationUIData | null;
+  openNotificationUI: (params: NotificationUIData) => void;
   localPushNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
@@ -94,6 +98,7 @@ export const NotificationManageProvider = ({
   navigateToLink: _navigateToLink,
   openLink,
   refreshBadgeCount,
+  getValidNotificationUIData,
   openNotificationUI,
   localPushNotification,
 }: NotificationManageProviderProps) => {
@@ -173,6 +178,7 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
+      getValidNotificationUIData,
       openNotificationUI,
       localPushNotification,
       activeNotificationNavigation,
@@ -184,6 +190,7 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
+      getValidNotificationUIData,
       openNotificationUI,
       localPushNotification,
       activeNotificationNavigation,
