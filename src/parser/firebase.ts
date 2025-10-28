@@ -83,7 +83,8 @@ export const parseFCMBackgroundClickMessage = (message: RemoteMessage) => {
   const display = message?.data?.display as string | undefined;
   const trigger = display ? JSON.parse(display) : {};
   const deepLink = trigger?.action;
-  return { deepLink, raw: message };
+  const type = message?.data?.type;
+  return { deepLink, type, raw: message };
 };
 
 export const parseFCMQuitClickMessage = (message: RemoteMessage) => {
