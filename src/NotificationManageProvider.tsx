@@ -165,12 +165,18 @@ export const NotificationManageProvider = ({
   );
 };
 
-export const useNotificationManage = () => {
+export const useNotificationManage = (
+  overrideTargetProps: Record<string, unknown> = {},
+) => {
   const context = useContext(NotificationManageContext);
   if (!context) {
     throw new Error(
       "useNotificationManage must be used within a NotificationManageProvider",
     );
   }
-  return context;
+
+  return {
+    ...context,
+    ...overrideTargetProps,
+  };
 };
