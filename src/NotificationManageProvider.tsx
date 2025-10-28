@@ -14,6 +14,12 @@ type NotificationManageContextValue = {
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
+  openToast: (params: {
+    content: string;
+    deepLink?: string;
+    image?: string;
+    type?: string;
+  }) => void;
 };
 export const NotificationManageContext =
   createContext<NotificationManageContextValue>({
@@ -23,6 +29,7 @@ export const NotificationManageContext =
     navigateToLink: () => {},
     openLink: () => {},
     refreshBadgeCount: () => {},
+    openToast: () => {},
   });
 
 type NotificationManageProviderProps = PropsWithChildren<{
@@ -74,6 +81,7 @@ export const NotificationManageProvider = ({
   navigateToLink,
   openLink,
   refreshBadgeCount,
+  openToast,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
 
@@ -126,6 +134,7 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
+      openToast,
     }),
     [
       token,
@@ -134,6 +143,7 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
+      openToast,
     ],
   );
   return (
