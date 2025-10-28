@@ -166,7 +166,7 @@ export const NotificationManageProvider = ({
 };
 
 export const useNotificationManage = (
-  overrideTargetProps: Record<string, unknown> = {},
+  overrideTargetProps: Partial<NotificationManageContextValue> = {},
 ) => {
   const context = useContext(NotificationManageContext);
   if (!context) {
