@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 
-type NotificationManageContextValue = {
+export type NotificationManageContextValue = {
   token: string;
   sendNotificationUserEvent: (type: string) => void;
   refreshDeepLinkApis: (deepLink: string) => void;
