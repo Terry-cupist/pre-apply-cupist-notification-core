@@ -1,9 +1,11 @@
 import {
   createContext,
   PropsWithChildren,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -14,7 +16,7 @@ export type NotificationManageContextValue = {
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
-  openToast: (params: {
+  openNotificationUI: (params: {
     content: string;
     deepLink?: string;
     image?: string;
@@ -24,6 +26,7 @@ export type NotificationManageContextValue = {
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
   ) => void;
+  activeNotificationNavigation: () => void;
 };
 export const NotificationManageContext =
   createContext<NotificationManageContextValue>({
@@ -33,8 +36,9 @@ export const NotificationManageContext =
     navigateToLink: () => {},
     openLink: () => {},
     refreshBadgeCount: () => {},
-    openToast: () => {},
+    openNotificationUI: () => {},
     localPushNotification: () => {},
+    activeNotificationNavigation: () => {},
   });
 
 type NotificationManageProviderProps = PropsWithChildren<{
@@ -57,7 +61,7 @@ type NotificationManageProviderProps = PropsWithChildren<{
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
-  openToast: (params: {
+  openNotificationUI: (params: {
     content: string;
     deepLink?: string;
     image?: string;
@@ -87,10 +91,10 @@ export const NotificationManageProvider = ({
   // Notification handler events
   sendNotificationUserEvent,
   refreshDeepLinkApis,
-  navigateToLink,
+  navigateToLink: _navigateToLink,
   openLink,
   refreshBadgeCount,
-  openToast,
+  openNotificationUI,
   localPushNotification,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
@@ -136,6 +140,31 @@ export const NotificationManageProvider = ({
     return refreshTokenListener(setToken);
   }, []);
 
+  const [isNotificationNavigationActive, setIsNotificationNavigationActive] =
+    useState(false);
+  const activeNotificationNavigation = useCallback(() => {
+    setIsNotificationNavigationActive(true);
+  }, []);
+
+  const navigationDeepLink = useRef<string>("");
+  const navigateToLink = useCallback(
+    (deepLink: string) => {
+      if (isNotificationNavigationActive && !navigationDeepLink.current) {
+        _navigateToLink(deepLink);
+      } else {
+        navigationDeepLink.current = deepLink;
+      }
+    },
+    [isNotificationNavigationActive],
+  );
+
+  useEffect(() => {
+    if (isNotificationNavigationActive && navigationDeepLink.current) {
+      _navigateToLink(navigationDeepLink.current);
+      navigationDeepLink.current = "";
+    }
+  }, [isNotificationNavigationActive]);
+
   const contextValue: NotificationManageContextValue = useMemo(
     () => ({
       token,
@@ -144,8 +173,9 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
-      openToast,
+      openNotificationUI,
       localPushNotification,
+      activeNotificationNavigation,
     }),
     [
       token,
@@ -154,8 +184,9 @@ export const NotificationManageProvider = ({
       navigateToLink,
       openLink,
       refreshBadgeCount,
-      openToast,
+      openNotificationUI,
       localPushNotification,
+      activeNotificationNavigation,
     ],
   );
   return (
