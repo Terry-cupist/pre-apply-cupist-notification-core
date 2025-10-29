@@ -19,7 +19,7 @@ export type NotificationUIData = {
 export type NotificationManageContextValue = {
   token: string;
   sendNotificationUserEvent: (type: string) => void;
-  refreshDeepLinkApis: (deepLink: string) => void;
+  refreshDeepLinkApis: (deepLink: string) => void | Promise<void>;
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
@@ -67,7 +67,7 @@ type NotificationManageProviderProps = PropsWithChildren<{
   onTokenChangeError?: (error: unknown) => void;
   // Notification handler events
   sendNotificationUserEvent: (type: string) => void;
-  refreshDeepLinkApis: (deepLink: string) => void;
+  refreshDeepLinkApis: (deepLink: string) => void | Promise<void>;
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
   refreshBadgeCount: () => void;
