@@ -18,43 +18,64 @@ export type NotificationUIData = {
 
 export type NotificationManageContextValue = {
   token: string;
+  // Notification User Interaction Effects
   sendNotificationUserEvent: (type: string) => void;
+  refreshBadgeCount: () => void;
+
+  // Notification Foreground UI
+  checkIsNotificationOpenValid?: (params: NotificationUIData) => boolean;
+  beforeOpenNotificationUI?: (params: NotificationUIData) => void;
+  openNotificationUI: (
+    params: NotificationUIData & { onPress?: () => void },
+  ) => void;
+  onNotificationUIPress?: (params: NotificationUIData) => void;
+  afterOpenNotificationUI?: (params: NotificationUIData) => void;
+
+  // Deep Link Action
   refreshDeepLinkApis: (deepLink: string) => void | Promise<void>;
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
-  refreshBadgeCount: () => void;
-  checkIsToastOpenValid?: (params: NotificationUIData) => boolean;
-  beforeOpenNotificationUI?: (params: NotificationUIData) => void;
-  openToast: (params: NotificationUIData & { onPress?: () => void }) => void;
-  onToastPress?: (params: NotificationUIData) => void;
-  afterOpenToast?: (params: NotificationUIData) => void;
+
+  // Navigation Active Trigger
+  activeNotificationNavigation: () => void;
+
+  // Local Push Notification
   localPushNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
   ) => void;
-  activeNotificationNavigation: () => void;
 };
 export const NotificationManageContext =
   createContext<NotificationManageContextValue>({
     token: "",
+    // Notification User Interaction Effects
     sendNotificationUserEvent: () => {},
+    refreshBadgeCount: () => {},
+
+    // Notification Foreground UI
+    checkIsNotificationOpenValid: () => true,
+    beforeOpenNotificationUI: () => {},
+    openNotificationUI: () => {},
+    onNotificationUIPress: () => {},
+    afterOpenNotificationUI: () => {},
+
+    // Deep Link Action
     refreshDeepLinkApis: () => {},
     navigateToLink: () => {},
     openLink: () => {},
-    refreshBadgeCount: () => {},
-    checkIsToastOpenValid: () => true,
-    beforeOpenNotificationUI: () => {},
-    openToast: () => {},
-    onToastPress: () => {},
-    afterOpenToast: () => {},
-    localPushNotification: () => {},
+
+    // Navigation Active Trigger
     activeNotificationNavigation: () => {},
+
+    // Local Push Notification
+    localPushNotification: () => {},
   });
 
 type NotificationManageProviderProps = PropsWithChildren<{
   // Environment management
   setForegroundNotificationHandler: () => void;
   createChannel: () => void;
+
   // Token management
   checkPermission: () => Promise<void>;
   checkRegisteredDevice: () => Promise<void>;
@@ -65,17 +86,26 @@ type NotificationManageProviderProps = PropsWithChildren<{
   setStoredToken: (token: string) => Promise<void> | void;
   onInitializeTokenError?: (error: unknown) => void;
   onTokenChangeError?: (error: unknown) => void;
-  // Notification handler events
+
+  // Notification User Interaction Effects
   sendNotificationUserEvent: (type: string) => void;
+  refreshBadgeCount: () => void;
+
+  // Deep Link Action
   refreshDeepLinkApis: (deepLink: string) => void | Promise<void>;
   navigateToLink: (deepLink: string) => void;
   openLink: (deepLink: string) => void;
-  refreshBadgeCount: () => void;
-  checkIsToastOpenValid?: (params: NotificationUIData) => boolean;
+
+  // Notification Foreground UI
+  checkIsNotificationOpenValid?: (params: NotificationUIData) => boolean;
   beforeOpenNotificationUI?: (params: NotificationUIData) => void;
-  openToast: (params: NotificationUIData & { onPress?: () => void }) => void;
-  onToastPress?: (params: NotificationUIData) => void;
-  afterOpenToast?: (params: NotificationUIData) => void;
+  openNotificationUI: (
+    params: NotificationUIData & { onPress?: () => void },
+  ) => void;
+  onNotificationUIPress?: (params: NotificationUIData) => void;
+  afterOpenNotificationUI?: (params: NotificationUIData) => void;
+
+  // Local Push Notification
   localPushNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
@@ -87,6 +117,7 @@ export const NotificationManageProvider = ({
   // Environment management
   setForegroundNotificationHandler,
   createChannel,
+
   // Token management
   checkPermission,
   checkRegisteredDevice,
@@ -97,17 +128,24 @@ export const NotificationManageProvider = ({
   setStoredToken,
   onInitializeTokenError,
   onTokenChangeError,
-  // Notification handler events
+
+  // Notification User Interaction Effects
   sendNotificationUserEvent,
+  refreshBadgeCount,
+
+  // Notification Foreground UI
+  checkIsNotificationOpenValid,
+  beforeOpenNotificationUI,
+  openNotificationUI,
+  onNotificationUIPress,
+  afterOpenNotificationUI,
+
+  // Deep Link Action
   refreshDeepLinkApis,
   navigateToLink: _navigateToLink,
   openLink,
-  refreshBadgeCount,
-  checkIsToastOpenValid,
-  beforeOpenNotificationUI,
-  openToast,
-  onToastPress,
-  afterOpenToast,
+
+  // Local Push Notification
   localPushNotification,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
@@ -155,20 +193,15 @@ export const NotificationManageProvider = ({
 
   const [isNotificationNavigationActive, setIsNotificationNavigationActive] =
     useState(false);
+  const isNotificationNavigationActiveRef = useRef(false);
   const activeNotificationNavigation = useCallback(() => {
     setIsNotificationNavigationActive(true);
     isNotificationNavigationActiveRef.current = true;
   }, []);
 
   const navigationDeepLink = useRef<string>("");
-  const isNotificationNavigationActiveRef = useRef(false);
   const navigateToLink = useCallback(
     (deepLink: string) => {
-      console.log(
-        "provider",
-        isNotificationNavigationActive,
-        !navigationDeepLink.current,
-      );
       if (
         isNotificationNavigationActiveRef.current &&
         !navigationDeepLink.current
@@ -182,11 +215,6 @@ export const NotificationManageProvider = ({
   );
 
   useEffect(() => {
-    console.log(
-      "provider useEffect",
-      isNotificationNavigationActive,
-      navigationDeepLink.current,
-    );
     if (isNotificationNavigationActive && navigationDeepLink.current) {
       _navigateToLink(navigationDeepLink.current);
       navigationDeepLink.current = "";
@@ -196,33 +224,53 @@ export const NotificationManageProvider = ({
   const contextValue: NotificationManageContextValue = useMemo(
     () => ({
       token,
+
+      // Notification User Interaction Effects
       sendNotificationUserEvent,
+      refreshBadgeCount,
+
+      // Deep Link Action
       refreshDeepLinkApis,
       navigateToLink,
       openLink,
-      refreshBadgeCount,
-      checkIsToastOpenValid,
+
+      // Notification Foreground UI
+      checkIsNotificationOpenValid,
       beforeOpenNotificationUI,
-      openToast,
-      onToastPress,
-      afterOpenToast,
-      localPushNotification,
+      openNotificationUI,
+      onNotificationUIPress,
+      afterOpenNotificationUI,
+
+      // Navigation Active Trigger
       activeNotificationNavigation,
+
+      // Local Push Notification
+      localPushNotification,
     }),
     [
       token,
+
+      // Notification User Interaction Effects
       sendNotificationUserEvent,
+      refreshBadgeCount,
+
+      // Deep Link Action
       refreshDeepLinkApis,
       navigateToLink,
       openLink,
-      refreshBadgeCount,
-      checkIsToastOpenValid,
+
+      // Notification Foreground UI
+      checkIsNotificationOpenValid,
       beforeOpenNotificationUI,
-      openToast,
-      onToastPress,
-      afterOpenToast,
-      localPushNotification,
+      openNotificationUI,
+      onNotificationUIPress,
+      afterOpenNotificationUI,
+
+      // Navigation Active Trigger
       activeNotificationNavigation,
+
+      // Local Push Notification
+      localPushNotification,
     ],
   );
   return (
