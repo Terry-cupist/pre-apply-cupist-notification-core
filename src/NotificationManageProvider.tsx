@@ -19,28 +19,28 @@ export type NotificationUIData = {
 export type NotificationManageContextValue = {
   token: string;
   // Notification User Interaction Effects
-  sendNotificationUserEvent: (type: string) => void;
-  refreshBadgeCount: () => void;
+  onLogNotificationEvent: (type: string) => void;
+  onRefreshBadgeCount: () => void;
 
   // Notification Foreground UI
-  checkIsNotificationOpenValid?: (params: NotificationUIData) => boolean;
-  beforeOpenNotificationUI?: (params: NotificationUIData) => void;
-  openNotificationUI: (
+  shouldShowNotification?: (params: NotificationUIData) => boolean;
+  onBeforeShowNotification?: (params: NotificationUIData) => void;
+  onRenderNotification: (
     params: NotificationUIData & { onPress?: () => void },
   ) => void;
-  onNotificationUIPress?: (params: NotificationUIData) => void;
-  afterOpenNotificationUI?: (params: NotificationUIData) => void;
+  onNotificationPress?: (params: NotificationUIData) => void;
+  onAfterShowNotification?: (params: NotificationUIData) => void;
 
   // Deep Link Action
-  refreshDeepLinkApis: (deepLink: string) => void | Promise<void>;
-  navigateToLink: (deepLink: string) => void;
-  openLink: (deepLink: string) => void;
+  onRefreshQueriesForDeepLink: (deepLink: string) => void | Promise<void>;
+  onNavigateToDeepLink: (deepLink: string) => void;
+  onOpenExternalLink: (deepLink: string) => void;
 
   // Navigation Active Trigger
   activeNotificationNavigation: () => void;
 
   // Local Push Notification
-  localPushNotification: (
+  onDisplayLocalNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
   ) => void;
@@ -49,64 +49,66 @@ export const NotificationManageContext =
   createContext<NotificationManageContextValue>({
     token: "",
     // Notification User Interaction Effects
-    sendNotificationUserEvent: () => {},
-    refreshBadgeCount: () => {},
+    onLogNotificationEvent: () => {},
+    onRefreshBadgeCount: () => {},
 
     // Notification Foreground UI
-    checkIsNotificationOpenValid: () => true,
-    beforeOpenNotificationUI: () => {},
-    openNotificationUI: () => {},
-    onNotificationUIPress: () => {},
-    afterOpenNotificationUI: () => {},
+    shouldShowNotification: () => true,
+    onBeforeShowNotification: () => {},
+    onRenderNotification: () => {},
+    onNotificationPress: () => {},
+    onAfterShowNotification: () => {},
 
     // Deep Link Action
-    refreshDeepLinkApis: () => {},
-    navigateToLink: () => {},
-    openLink: () => {},
+    onRefreshQueriesForDeepLink: () => {},
+    onNavigateToDeepLink: () => {},
+    onOpenExternalLink: () => {},
 
     // Navigation Active Trigger
     activeNotificationNavigation: () => {},
 
     // Local Push Notification
-    localPushNotification: () => {},
+    onDisplayLocalNotification: () => {},
   });
 
 type NotificationManageProviderProps = PropsWithChildren<{
   // Environment management
-  setForegroundNotificationHandler: () => void;
-  createChannel: () => void;
+  onSetupForegroundBehavior: () => void;
+  onCreateNotificationChannel: () => void;
 
   // Token management
-  checkPermission: () => Promise<void>;
-  checkRegisteredDevice: () => Promise<void>;
-  getToken: () => Promise<string> | string;
-  registerTokenApi?: (token: string) => Promise<any>;
-  refreshTokenListener: (callback: (newToken: string) => void) => () => void;
-  getStoredToken: () => Promise<string>;
-  setStoredToken: (token: string) => Promise<void> | void;
-  onInitializeTokenError?: (error: unknown) => void;
+  onRequestNotificationPermission: () => Promise<void>;
+  onEnsureDeviceRegistration: () => Promise<void>;
+  onFetchNotificationToken: () => Promise<string> | string;
+  onRegisterTokenToServer?: (token: string) => Promise<any>;
+  onSubscribeToTokenRefresh: (
+    callback: (newToken: string) => void,
+  ) => () => void;
+  onLoadStoredToken: () => Promise<string>;
+  onSaveToken: (token: string) => Promise<void> | void;
+  onTokenInitializationError?: (error: unknown) => void;
   onTokenChangeError?: (error: unknown) => void;
 
   // Notification User Interaction Effects
-  sendNotificationUserEvent: (type: string) => void;
-  refreshBadgeCount: () => void;
+  onLogNotificationEvent: (type: string) => void;
+  onRefreshBadgeCount: () => void;
 
   // Deep Link Action
-  refreshDeepLinkApis: (deepLink: string) => void | Promise<void>;
-  navigateToLink: (deepLink: string) => void;
-  openLink: (deepLink: string) => void;
+  onRefreshQueriesForDeepLink: (deepLink: string) => void | Promise<void>;
+  onNavigateToDeepLink: (deepLink: string) => void;
+  onOpenExternalLink: (deepLink: string) => void;
 
   // Notification Foreground UI
-  checkIsNotificationOpenValid?: (params: NotificationUIData) => boolean;
-  beforeOpenNotificationUI?: (params: NotificationUIData) => void;
-  openNotificationUI: (
+  shouldShowNotification?: (params: NotificationUIData) => boolean;
+  onBeforeShowNotification?: (params: NotificationUIData) => void;
+  onRenderNotification: (
     params: NotificationUIData & { onPress?: () => void },
   ) => void;
-  onNotificationUIPress?: (params: NotificationUIData) => void;
-  afterOpenNotificationUI?: (params: NotificationUIData) => void;
+  onNotificationPress?: (params: NotificationUIData) => void;
+  onAfterShowNotification?: (params: NotificationUIData) => void;
 
   // Local Push Notification
-  localPushNotification: (
+  onDisplayLocalNotification: (
     notificationInfo: { title: string; message: string; largeIconUrl: string },
     userInfo: unknown,
   ) => void;
@@ -115,58 +117,58 @@ type NotificationManageProviderProps = PropsWithChildren<{
 export const NotificationManageProvider = ({
   children,
   // Environment management
-  setForegroundNotificationHandler,
-  createChannel,
+  onSetupForegroundBehavior,
+  onCreateNotificationChannel,
 
   // Token management
-  checkPermission,
-  checkRegisteredDevice,
-  getToken,
-  registerTokenApi,
-  refreshTokenListener,
-  getStoredToken,
-  setStoredToken,
-  onInitializeTokenError,
+  onRequestNotificationPermission,
+  onEnsureDeviceRegistration,
+  onFetchNotificationToken,
+  onRegisterTokenToServer,
+  onSubscribeToTokenRefresh,
+  onLoadStoredToken,
+  onSaveToken,
+  onTokenInitializationError,
   onTokenChangeError,
 
   // Notification User Interaction Effects
-  sendNotificationUserEvent,
-  refreshBadgeCount,
+  onLogNotificationEvent,
+  onRefreshBadgeCount,
 
   // Notification Foreground UI
-  checkIsNotificationOpenValid,
-  beforeOpenNotificationUI,
-  openNotificationUI,
-  onNotificationUIPress,
-  afterOpenNotificationUI,
+  shouldShowNotification,
+  onBeforeShowNotification,
+  onRenderNotification,
+  onNotificationPress,
+  onAfterShowNotification,
 
   // Deep Link Action
-  refreshDeepLinkApis,
-  navigateToLink: _navigateToLink,
-  openLink,
+  onRefreshQueriesForDeepLink,
+  onNavigateToDeepLink: _onNavigateToDeepLink,
+  onOpenExternalLink,
 
   // Local Push Notification
-  localPushNotification,
+  onDisplayLocalNotification,
 }: NotificationManageProviderProps) => {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    setForegroundNotificationHandler();
-    createChannel();
+    onSetupForegroundBehavior();
+    onCreateNotificationChannel();
   }, []);
 
   useEffect(() => {
     (async () => {
       try {
-        await checkPermission();
-        await checkRegisteredDevice();
+        await onRequestNotificationPermission();
+        await onEnsureDeviceRegistration();
 
-        const responseToken = await getToken();
+        const responseToken = await onFetchNotificationToken();
         setToken(responseToken);
-        await registerTokenApi?.(responseToken);
-        setStoredToken(responseToken);
+        await onRegisterTokenToServer?.(responseToken);
+        onSaveToken(responseToken);
       } catch (error) {
-        onInitializeTokenError?.(error);
+        onTokenInitializationError?.(error);
       }
     })();
   }, []);
@@ -175,10 +177,10 @@ export const NotificationManageProvider = ({
     (async () => {
       if (token) {
         try {
-          const prevToken = await getStoredToken();
+          const prevToken = await onLoadStoredToken();
           if (prevToken !== token) {
-            await registerTokenApi?.(token);
-            setStoredToken(token);
+            await onRegisterTokenToServer?.(token);
+            onSaveToken(token);
           }
         } catch (error) {
           onTokenChangeError?.(error);
@@ -188,7 +190,7 @@ export const NotificationManageProvider = ({
   }, [token]);
 
   useEffect(() => {
-    return refreshTokenListener(setToken);
+    return onSubscribeToTokenRefresh(setToken);
   }, []);
 
   const [isNotificationNavigationActive, setIsNotificationNavigationActive] =
@@ -200,13 +202,13 @@ export const NotificationManageProvider = ({
   }, []);
 
   const navigationDeepLink = useRef<string>("");
-  const navigateToLink = useCallback(
+  const onNavigateToDeepLink = useCallback(
     (deepLink: string) => {
       if (
         isNotificationNavigationActiveRef.current &&
         !navigationDeepLink.current
       ) {
-        _navigateToLink(deepLink);
+        _onNavigateToDeepLink(deepLink);
       } else {
         navigationDeepLink.current = deepLink;
       }
@@ -216,7 +218,7 @@ export const NotificationManageProvider = ({
 
   useEffect(() => {
     if (isNotificationNavigationActive && navigationDeepLink.current) {
-      _navigateToLink(navigationDeepLink.current);
+      _onNavigateToDeepLink(navigationDeepLink.current);
       navigationDeepLink.current = "";
     }
   }, [isNotificationNavigationActive]);
@@ -226,51 +228,51 @@ export const NotificationManageProvider = ({
       token,
 
       // Notification User Interaction Effects
-      sendNotificationUserEvent,
-      refreshBadgeCount,
+      onLogNotificationEvent,
+      onRefreshBadgeCount,
 
       // Deep Link Action
-      refreshDeepLinkApis,
-      navigateToLink,
-      openLink,
+      onRefreshQueriesForDeepLink,
+      onNavigateToDeepLink,
+      onOpenExternalLink,
 
       // Notification Foreground UI
-      checkIsNotificationOpenValid,
-      beforeOpenNotificationUI,
-      openNotificationUI,
-      onNotificationUIPress,
-      afterOpenNotificationUI,
+      shouldShowNotification,
+      onBeforeShowNotification,
+      onRenderNotification,
+      onNotificationPress,
+      onAfterShowNotification,
 
       // Navigation Active Trigger
       activeNotificationNavigation,
 
       // Local Push Notification
-      localPushNotification,
+      onDisplayLocalNotification,
     }),
     [
       token,
 
       // Notification User Interaction Effects
-      sendNotificationUserEvent,
-      refreshBadgeCount,
+      onLogNotificationEvent,
+      onRefreshBadgeCount,
 
       // Deep Link Action
-      refreshDeepLinkApis,
-      navigateToLink,
-      openLink,
+      onRefreshQueriesForDeepLink,
+      onNavigateToDeepLink,
+      onOpenExternalLink,
 
       // Notification Foreground UI
-      checkIsNotificationOpenValid,
-      beforeOpenNotificationUI,
-      openNotificationUI,
-      onNotificationUIPress,
-      afterOpenNotificationUI,
+      shouldShowNotification,
+      onBeforeShowNotification,
+      onRenderNotification,
+      onNotificationPress,
+      onAfterShowNotification,
 
       // Navigation Active Trigger
       activeNotificationNavigation,
 
       // Local Push Notification
-      localPushNotification,
+      onDisplayLocalNotification,
     ],
   );
   return (
