@@ -157,9 +157,11 @@ export const NotificationManageProvider = ({
     useState(false);
   const activeNotificationNavigation = useCallback(() => {
     setIsNotificationNavigationActive(true);
+    isNotificationNavigationActiveRef.current = true;
   }, []);
 
   const navigationDeepLink = useRef<string>("");
+  const isNotificationNavigationActiveRef = useRef(false);
   const navigateToLink = useCallback(
     (deepLink: string) => {
       console.log(
@@ -167,7 +169,10 @@ export const NotificationManageProvider = ({
         isNotificationNavigationActive,
         !navigationDeepLink.current,
       );
-      if (isNotificationNavigationActive && !navigationDeepLink.current) {
+      if (
+        isNotificationNavigationActiveRef.current &&
+        !navigationDeepLink.current
+      ) {
         _navigateToLink(deepLink);
       } else {
         navigationDeepLink.current = deepLink;
