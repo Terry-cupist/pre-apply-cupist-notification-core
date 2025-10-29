@@ -162,6 +162,11 @@ export const NotificationManageProvider = ({
   const navigationDeepLink = useRef<string>("");
   const navigateToLink = useCallback(
     (deepLink: string) => {
+      console.log(
+        "provider",
+        isNotificationNavigationActive,
+        !navigationDeepLink.current,
+      );
       if (isNotificationNavigationActive && !navigationDeepLink.current) {
         _navigateToLink(deepLink);
       } else {
@@ -172,6 +177,11 @@ export const NotificationManageProvider = ({
   );
 
   useEffect(() => {
+    console.log(
+      "provider useEffect",
+      isNotificationNavigationActive,
+      navigationDeepLink.current,
+    );
     if (isNotificationNavigationActive && navigationDeepLink.current) {
       _navigateToLink(navigationDeepLink.current);
       navigationDeepLink.current = "";
