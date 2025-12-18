@@ -63,7 +63,7 @@ onDisplayLocalNotification, }) => {
                     console.log("💾 [NotificationManageProvider] 토큰 저장 완료");
                 }
                 else {
-                    console.error("❌ [NotificationManageProvider] 토큰 빈 문자열 초기화 notificationAvailableKey 없음");
+                    console.log("⚠️ [NotificationManageProvider] 토큰 빈 문자열 초기화 notificationAvailableKey 없음");
                     setToken("");
                 }
             }
