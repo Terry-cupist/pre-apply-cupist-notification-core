@@ -28,6 +28,7 @@ export type NotificationManageContextValue = {
 };
 export declare const NotificationManageContext: import("react").Context<NotificationManageContextValue>;
 type NotificationManageProviderProps = PropsWithChildren<{
+    notificationAvailableKey?: string;
     onSetupForegroundBehavior: () => void;
     onCreateNotificationChannel: () => void;
     onRequestNotificationPermission: () => Promise<void>;
@@ -57,7 +58,7 @@ type NotificationManageProviderProps = PropsWithChildren<{
         largeIconUrl: string;
     }, userInfo: unknown) => void;
 }>;
-export declare const NotificationManageProvider: ({ children, onSetupForegroundBehavior, onCreateNotificationChannel, onRequestNotificationPermission, onEnsureDeviceRegistration, onFetchNotificationToken, onRegisterTokenToServer, onSubscribeToTokenRefresh, onLoadStoredToken, onSaveToken, onTokenInitializationError, onTokenChangeError, onLogNotificationEvent, onRefreshBadgeCount, shouldShowNotification, onBeforeShowNotification, onRenderNotification, onNotificationPress, onAfterShowNotification, onRefreshQueriesForDeepLink, onNavigateToDeepLink: _onNavigateToDeepLink, onOpenExternalLink, onDisplayLocalNotification, }: NotificationManageProviderProps) => import("react/jsx-runtime").JSX.Element;
+export declare const NotificationManageProvider: ({ notificationAvailableKey, children, onSetupForegroundBehavior, onCreateNotificationChannel, onRequestNotificationPermission, onEnsureDeviceRegistration, onFetchNotificationToken, onRegisterTokenToServer, onSubscribeToTokenRefresh, onLoadStoredToken, onSaveToken, onTokenInitializationError, onTokenChangeError, onLogNotificationEvent, onRefreshBadgeCount, shouldShowNotification, onBeforeShowNotification, onRenderNotification, onNotificationPress, onAfterShowNotification, onRefreshQueriesForDeepLink, onNavigateToDeepLink: _onNavigateToDeepLink, onOpenExternalLink, onDisplayLocalNotification, }: NotificationManageProviderProps) => import("react/jsx-runtime").JSX.Element;
 export declare const useNotificationManage: (overrideTargetProps?: Partial<NotificationManageContextValue>) => {
     token: string;
     onLogNotificationEvent: (type: string) => void;
