@@ -279,7 +279,7 @@ export const NotificationManageProvider = ({
         navigationDeepLink.current = deepLink;
       }
     },
-    [isNotificationNavigationActive],
+    [isNotificationNavigationActive, _onNavigateToDeepLink],
   );
 
   useEffect(() => {
@@ -294,7 +294,7 @@ export const NotificationManageProvider = ({
         "✅ [NotificationManageProvider] 딥링크 실행 완료, 대기 상태 초기화",
       );
     }
-  }, [isNotificationNavigationActive]);
+  }, [isNotificationNavigationActive, _onNavigateToDeepLink]);
 
   const contextValue: NotificationManageContextValue = useMemo(
     () => ({
