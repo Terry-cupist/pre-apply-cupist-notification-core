@@ -125,7 +125,7 @@ onDisplayLocalNotification, }) => {
             console.log("⏸️ [NotificationManageProvider] 딥링크 대기 상태로 저장");
             navigationDeepLink.current = deepLink;
         }
-    }, [isNotificationNavigationActive]);
+    }, [isNotificationNavigationActive, _onNavigateToDeepLink]);
     (0, react_1.useEffect)(() => {
         if (isNotificationNavigationActive && navigationDeepLink.current) {
             console.log("🚀 [NotificationManageProvider] 대기 중인 딥링크 실행:", navigationDeepLink.current);
@@ -133,7 +133,7 @@ onDisplayLocalNotification, }) => {
             navigationDeepLink.current = "";
             console.log("✅ [NotificationManageProvider] 딥링크 실행 완료, 대기 상태 초기화");
         }
-    }, [isNotificationNavigationActive]);
+    }, [isNotificationNavigationActive, _onNavigateToDeepLink]);
     const contextValue = (0, react_1.useMemo)(() => ({
         token,
         // Notification User Interaction Effects
